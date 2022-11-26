@@ -1,0 +1,9 @@
+{
+  "name": "purs-to-md",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "purs-to-md": "src/index.js"
+  }
+}
