@@ -1,11 +1,3 @@
-#!/usr/bin/env node
-
-import * as fs from "fs"
-
-const [, , ...args] = process.argv
-
-const inPath = args[0]
-const outPath = args[1]
 
 const parse = (str) => {
     const lines = str.split("\n")
@@ -55,12 +47,3 @@ export const convert = (src) => {
     const data = parse(src)
     return print(data)
 }
-
-const main = () => {
-    const lines = fs.readFileSync(inPath).toString()
-    const str = convert(lines)
-    fs.writeFileSync(outPath, str)
-}
-
-
-main()
