@@ -51,12 +51,14 @@ const print = (data) => {
     return lines
 }
 
+export const convert = (src) => {
+    const data = parse(src)
+    return print(data)
+}
 
 const main = () => {
     const lines = fs.readFileSync(inPath).toString()
-    const data = parse(lines)
-    const str = print(data)
-
+    const str = convert(lines)
     fs.writeFileSync(outPath, str)
 }
 
