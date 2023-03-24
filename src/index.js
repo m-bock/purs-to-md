@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require("fs")
+import * as fs from "fs"
 
 const [, , ...args] = process.argv
 
