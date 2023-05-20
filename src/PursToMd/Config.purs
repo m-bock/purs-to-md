@@ -31,12 +31,12 @@ import Record as Record
 type AppConfigOptionalF :: (Type -> Type) -> Row Type
 type AppConfigOptionalF f =
   ( debug :: f Boolean
-  , cwd :: f AbsDir
   )
 
 type AppConfigMandatory r =
   { inputPurs :: AbsFile
   , outputMd :: AbsFile
+  , cwd :: AbsDir
   | r
   }
 
@@ -50,10 +50,9 @@ type It a = a
 -- Defaults
 ------------------------------------------------------------------------------
 
-defaults :: AbsDir -> { | AppConfigOptionalF It }
-defaults cwd =
+defaults :: { | AppConfigOptionalF It }
+defaults =
   { debug: false
-  , cwd
   }
 
 ------------------------------------------------------------------------------
@@ -83,7 +82,7 @@ parseCLI cwd = O.info (O.helper <*> parseArgs) $ fold
       , O.help "Print debug information"
       ]
 
-    in { debug, cwd: Nothing } /\ { inputPurs, outputMd }
+    in { debug } /\ { inputPurs, outputMd, cwd }
 
 absFileOption :: AbsDir -> O.Mod O.OptionFields AbsFile -> O.Parser AbsFile
 absFileOption cwd = O.option (O.eitherReader $ readAbsFile cwd)
@@ -108,7 +107,7 @@ getConfig :: Aff AppConfig
 getConfig = do
   cwd <- getCwd
   cliConfigOptional /\ configMandatory <- liftEffect $ O.execParser $ parseCLI cwd
-  let config = mergeConfigs [ cliConfigOptional ] (defaults cwd)
+  let config = mergeConfigs [ cliConfigOptional ] defaults
   pure $ AppConfig (config `Record.merge` configMandatory)
 
 getCwd :: Aff AbsDir

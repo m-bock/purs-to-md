@@ -19,11 +19,15 @@ clean:
 ide:
     spago {{cfg_test}} test --purs-args "{{purs_args}} --json-errors"
 
-ci: clean build-strict test-strict
+ci: check-format clean build-strict test-strict
 
 format:
     purs-tidy format-in-place "src/**/*.purs"
     purs-tidy format-in-place "test/**/*.purs"
+
+check-format:
+    purs-tidy check "src/**/*.purs"
+    purs-tidy check "test/**/*.purs"
 
 dist:
     spago bundle-app --to dist/index.js

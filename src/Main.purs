@@ -24,7 +24,7 @@ main = launchAff_ do
 
   case result of
     Left err -> do
-      error $ printAppError err
+      error $ printAppError config err
       exit 1
     Right _ -> do
       exit 0
