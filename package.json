@@ -5,6 +5,6 @@
   "type": "module",
   "license": "MIT",
   "bin": {
-    "purs-to-md": "src/bin.js"
+    "purs-to-md": "dist/index.js"
   }
 }
