@@ -36,3 +36,6 @@ set positional-arguments := true
 run *a:
     spago run --purs-args "{{purs_args}}" -a "$@"
     
+run-sample:
+    spago run --purs-args "{{purs_args}}" -a \
+      '--debug --input-purs assets/Sample.purs --output-md assets/Sample.md'

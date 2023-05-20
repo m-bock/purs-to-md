@@ -2,58 +2,17 @@ module Test.PursToMdSpec (spec) where
 
 import Prelude
 
+import Data.Either (Either(..), isLeft)
 import Data.Maybe (fromMaybe')
+import Parsing as PA
 import Partial.Unsafe (unsafeCrashWith)
 import Pathy (AbsDir)
 import Pathy as P
+import PursToMd (MdCodeBlock(..), PursCodeBlock(..))
 import PursToMd as ME
 import PursToMd.Util as ME.Util
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
-
-pursFile :: String
-pursFile =
-  """
-module Main where
-
--- Let's define some variables:
-
-a :: Int
-a = 3
-
-b :: Int
-b = 3
-
--- And do some fancy calculattion:
-
-c :: Int
-c = a + b
-"""
-
-mdFile :: String
-mdFile =
-  """
-```hs
-module Main where
-```
-
-Let's define some variables:
-
-```hs
-a :: Int
-a = 3
-
-b :: Int
-b = 3
-```
-
-And do some fancy calculattion:
-
-```hs
-c :: Int
-c = a + b
-```
-"""
+import Test.Spec.Assertions (shouldEqual, shouldSatisfy)
 
 --------------------------------------------------------------------------------
 --- Spec
@@ -62,9 +21,28 @@ c = a + b
 spec :: Spec Unit
 spec = do
   describe "PursToMd" do
-    describe "pursToMd" $ do
-      it "should convert a purs file to a markdown file" do
-        ME.pursToMd pursFile `shouldEqual` mdFile
+    describe "parserMdCodeBlock" do
+      let
+        parse str = PA.runParser str ME.parserMdCodeBlock
+
+      it "should fail with wrong input" do
+        parse "" `shouldSatisfy` isLeft
+        parse "{-\nfooo" `shouldSatisfy` isLeft
+
+      it "should succeed with correct input" do
+        parse "{-\nfoo-}\n" `shouldEqual` (Right (MdCodeBlock "foo"))
+
+    describe "parserPursCodeBlock" do
+      let
+        parse str = PA.runParser str ME.parserPursCodeBlock
+
+      it "should fail with wrong input" do
+        parse "{-\nabc" `shouldSatisfy` isLeft
+      it "should succeed with correct input" do
+        parse "{abc" `shouldEqual` (Right (PursCodeBlock "{abc"))
+        parse "foo" `shouldEqual` (Right (PursCodeBlock "foo"))
+        parse "foo{-\n" `shouldEqual` (Right (PursCodeBlock "foo"))
+
   describe "PursToMd.Util" do
     describe "printMaybeRel" $ do
       it "should print a relative path" do

@@ -3,3 +3,4 @@
 .psc-ide-port
 /dist
 /.spago
+.psa-stash

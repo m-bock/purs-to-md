@@ -1,6 +1,8 @@
 { name = "purs-to-md"
 , dependencies =
   [ "aff"
+  , "arrays"
+  , "bifunctors"
   , "console"
   , "control"
   , "effect"
@@ -8,12 +10,14 @@
   , "exceptions"
   , "foldable-traversable"
   , "heterogeneous"
+  , "lists"
   , "maybe"
   , "newtype"
   , "node-buffer"
   , "node-fs-aff"
   , "node-process"
   , "optparse"
+  , "parsing"
   , "partial"
   , "pathy"
   , "prelude"
@@ -21,7 +25,6 @@
   , "strings"
   , "transformers"
   , "tuples"
-  , "unsafe-coerce"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs" ]
