@@ -30,7 +30,7 @@ check-format:
     purs-tidy check "test/**/*.purs"
 
 dist:
-    spago bundle-app --to dist/index.js
+    spago bundle-app --platform=node --to dist/index.js
 
 set positional-arguments := true
 run *a:
