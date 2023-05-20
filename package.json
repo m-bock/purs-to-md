@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Michael Bock",
   "bin": {
-    "purs-to-md": "dist/index.js"
+    "purs-to-md": "bin/purs-to-md.js"
   },
   "files": [
     "dist",
