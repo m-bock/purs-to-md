@@ -29,7 +29,8 @@ check-format:
     purs-tidy check "src/**/*.purs"
     purs-tidy check "test/**/*.purs"
 
-dist:
+dist: ci
+    rm -rf dist
     spago bundle-app --platform=node --to dist/index.js
 
 set positional-arguments := true
