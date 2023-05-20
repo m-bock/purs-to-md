@@ -6,12 +6,15 @@ import Prelude
 Let's define some variables:
 -}
 
-x :: Int
-x = 1
+a :: Int
+a = 3
+
+b :: Int
+b = 3
 
 {-
-x
+And do some calculation:
 -}
-{-
-x
--}
+
+c :: Int
+c = a + b

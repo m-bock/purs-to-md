@@ -8,11 +8,17 @@ Let's define some variables:
 
 
 ```hs
-x :: Int
-x = 1
+a :: Int
+a = 3
+
+b :: Int
+b = 3
 ```
 
-x
+And do some calculation:
 
 
-x
+```hs
+c :: Int
+c = a + b
+```
