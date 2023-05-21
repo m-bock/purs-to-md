@@ -29,6 +29,9 @@ check-format:
     purs-tidy check "src/**/*.purs"
     purs-tidy check "test/**/*.purs"
 
+gen-readme:
+    yarn run md-magic --config ./markdown.config.cjs
+
 dist: ci
     rm -rf dist
     spago bundle-app --platform=node --to dist/index.js

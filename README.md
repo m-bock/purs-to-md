@@ -9,6 +9,27 @@ Multiline comments become plain markdown, and normal code become markdown code b
 npm install purs-to-md
 ```
 
+## CLI Options
+
+```
+purs-to-md --help
+```
+
+<!-- AUTO-GENERATED-CONTENT:START (cliHelp) -->
+```
+purs-to-md - Convert PureScript files with comments to Markdown
+
+Usage: purs-to-md.js --input-purs ARG --output-md ARG [--debug]
+  Convert PureScript files with comments to Markdown
+
+Available options:
+  -h,--help                Show this help text
+  --input-purs ARG         PureScript file to read from
+  --output-md ARG          Markdown file to write to
+  --debug                  Print debug information
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 ## Example
 
 Define a PureScript file like this:
