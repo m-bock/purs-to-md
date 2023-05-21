@@ -18,7 +18,6 @@
   , "node-process"
   , "optparse"
   , "parsing"
-  , "partial"
   , "pathy"
   , "prelude"
   , "record"

@@ -3,6 +3,7 @@ module PursToMd.Config
   , AppConfigMandatory
   , AppConfigOptionalF
   , It
+  , OutputMd(..)
   , getConfig
   ) where
 
@@ -10,19 +11,22 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Control.Monad.Error.Class (throwError)
-import Data.Either (Either, note)
+import Data.Either (Either(..), note)
 import Data.Foldable (fold)
 import Data.Maybe (Maybe(..), optional)
+import Data.String as Str
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Exception (error)
 import MergeConfigs (mergeConfigs)
 import Node.Process as Process
+import Options.Applicative (ReadM)
 import Options.Applicative as O
 import Pathy (AbsDir, AbsFile, (</>))
 import Pathy as P
 import Record as Record
+import Text.PrettyPrint.Leijen as PP
 
 ------------------------------------------------------------------------------
 -- Types
@@ -31,11 +35,13 @@ import Record as Record
 type AppConfigOptionalF :: (Type -> Type) -> Row Type
 type AppConfigOptionalF f =
   ( debug :: f Boolean
+  , outputMd :: f OutputMd
   )
+
+data OutputMd = Stdout | OutFile AbsFile
 
 type AppConfigMandatory r =
   { inputPurs :: AbsFile
-  , outputMd :: AbsFile
   , cwd :: AbsDir
   | r
   }
@@ -53,6 +59,7 @@ type It a = a
 defaults :: { | AppConfigOptionalF It }
 defaults =
   { debug: false
+  , outputMd: Stdout
   }
 
 ------------------------------------------------------------------------------
@@ -60,21 +67,25 @@ defaults =
 ------------------------------------------------------------------------------
 
 parseCLI :: AbsDir -> O.ParserInfo ({ | AppConfigOptionalF Maybe } /\ AppConfigMandatory ())
-parseCLI cwd = O.info (O.helper <*> parseArgs) $ fold
-  [ O.fullDesc
-  , O.progDesc "Convert PureScript files with comments to Markdown"
-  , O.header "purs-to-md - Convert PureScript files with comments to Markdown"
-  ]
+parseCLI cwd =
+  O.info (O.helper <*> parseArgs) $ fold
+    [ O.fullDesc
+    , O.progDesc "Convert PureScript files with comments to Markdown"
+    , O.header "purs-to-md - Convert PureScript files with comments to Markdown"
+    ]
   where
   parseArgs = ado
-    inputPurs <- absFileOption cwd $ fold
+    inputPurs <- O.option (readAbsFile cwd) $ fold
       [ O.long "input-purs"
       , O.help "PureScript file to read from"
       ]
 
-    outputMd <- absFileOption cwd $ fold
+    outputMd <- optional $ O.option (readOutputMd cwd) $ fold
       [ O.long "output-md"
-      , O.help "Markdown file to write to"
+      , O.helpDoc $ pure $ PP.string $ Str.joinWith "\n"
+          [ "Markdown file to write to"
+          , "(File path or '-' for stdout, defaults to '-')"
+          ]
       ]
 
     debug <- optional $ O.switch $ fold
@@ -82,13 +93,20 @@ parseCLI cwd = O.info (O.helper <*> parseArgs) $ fold
       , O.help "Print debug information"
       ]
 
-    in { debug } /\ { inputPurs, outputMd, cwd }
+    in { debug, outputMd } /\ { inputPurs, cwd }
 
-absFileOption :: AbsDir -> O.Mod O.OptionFields AbsFile -> O.Parser AbsFile
-absFileOption cwd = O.option (O.eitherReader $ readAbsFile cwd)
+readOutputMd :: AbsDir -> ReadM OutputMd
+readOutputMd cwd =
+  let
+    readOutFile = map OutFile $ readAbsFile cwd
+    readStdout = O.eitherReader case _ of
+      "-" -> Right Stdout
+      _ -> Left "Output file must be '-' for stdout"
+  in
+    readStdout <|> readOutFile
 
-readAbsFile :: AbsDir -> String -> Either String AbsFile
-readAbsFile cwd str =
+readAbsFile :: AbsDir -> ReadM AbsFile
+readAbsFile cwd = O.eitherReader \str ->
   let
     parseAbs = P.parseAbsFile P.posixParser str
     parseRel = P.parseRelFile P.posixParser str
