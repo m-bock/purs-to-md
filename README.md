@@ -19,13 +19,14 @@ purs-to-md --help
 ```
 purs-to-md - Convert PureScript files with comments to Markdown
 
-Usage: purs-to-md.js --input-purs ARG --output-md ARG [--debug]
+Usage: purs-to-md.js --input-purs ARG [--output-md ARG] [--debug]
   Convert PureScript files with comments to Markdown
 
 Available options:
   -h,--help                Show this help text
   --input-purs ARG         PureScript file to read from
   --output-md ARG          Markdown file to write to
+                           (File path or '-' for stdout, defaults to '-')
   --debug                  Print debug information
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->

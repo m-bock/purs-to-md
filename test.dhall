@@ -7,5 +7,6 @@ in conf // {
     , "spec"
     , "console"
     , "spec-discovery"
+    , "partial"
     ]
 }
