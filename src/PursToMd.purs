@@ -42,7 +42,7 @@ parseOpen :: Parser String Unit
 parseOpen = void $ PS.string "{-\n"
 
 parseClose :: Parser String Unit
-parseClose = void $ PS.string "-}\n"
+parseClose = void $ PS.string "-}"
 
 parserPursCodeBlock :: Parser String PursCodeBlock
 parserPursCodeBlock =

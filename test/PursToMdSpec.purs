@@ -31,6 +31,7 @@ spec = do
 
       it "should succeed with correct input" do
         parse "{-\nfoo-}\n" `shouldEqual` (Right (MdCodeBlock "foo"))
+        parse "{-\nfoo-}" `shouldEqual` (Right (MdCodeBlock "foo"))
 
     describe "parserPursCodeBlock" do
       let
